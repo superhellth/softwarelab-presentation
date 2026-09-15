@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TourBuilder — Team 2 Final Presentation</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"></script>
+
+  <style>
+    :root {
+      --accent: #a855f7;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.16);
+    }
+
+    body, .reveal { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 20% 0%, #1e1b4b, #09090b 80%); color: #eef1f6; }
+    .reveal .slides section { text-align: left; }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.01em; text-transform: none; font-weight: 700; }
+    .reveal h2 { font-size: 2.1rem; line-height: 1.2; margin-bottom: 0.9rem; }
+    .gradient-text { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
+
+    /* section corner label, like a git label */
+    .corner-label { position: absolute; top: 1.1rem; right: 1.4rem; font-size: 0.7rem; color: #a5b4d4; background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); border-radius: 6px; padding: 0.2rem 0.6rem; letter-spacing: 0.02em; }
+
+    .credit { position: absolute; left: 1.4rem; bottom: 1rem; font-size: 0.65rem; color: #6b7280; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+    .card-grid.two { grid-template-columns: repeat(2, 1fr); }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1.1rem; text-align: left; }
+    .card h4 { margin: 0 0 0.3rem; font-size: 1rem; color: #fff; }
+    .card p { font-size: 0.8rem; color: #9aa4bd; margin: 0; line-height: 1.4; }
+    .card.highlight { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+
+    .diagram-container { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1rem 1.2rem; margin-top: 0.9rem; display: flex; align-items: center; justify-content: center; min-height: 160px; max-height: 400px; overflow: hidden; }
+
+    .frame { width: 100%; border-radius: 12px; border: 1px solid var(--card-border); overflow: hidden; background: #000; margin-top: 0.7rem; }
+    .frame iframe { width: 100%; height: 420px; border: 0; display: block; }
+    .frame-label { font-size: 0.78rem; color: #9aa4bd; margin-top: 0.6rem; }
+
+    .shot { border-radius: 12px; border: 1px solid var(--card-border); max-height: 56vh; display: block; margin-top: 0.6rem; }
+
+    .reveal table { font-size: 0.78rem; margin-top: 0.8rem; }
+    .reveal table th { color: var(--accent); text-align: left; }
+    .reveal table td, .reveal table th { padding: 0.3rem 0.8rem; border-bottom: 1px solid var(--card-border); }
+    .reveal table tr.highlight td { background: rgba(168,85,247,0.12); }
+
+    .msg { font-size: 1.05rem; color: #cbd5e1; margin: 0.3rem 0 0.6rem; }
+    ol.compact li, ul.compact li { margin-bottom: 0.4rem; font-size: 0.92rem; }
+    .small { font-size: 0.78rem; color: #9aa4bd; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; align-items: start; }
+    code { color: #c4b5fd; }
+
+    .reveal pre { width: 100%; box-shadow: none; margin-top: 0.9rem; }
+    .reveal pre code { white-space: pre-wrap; word-break: break-word; font-size: 0.78rem; max-height: none; padding: 1rem 1.2rem; }
+
+    /* roadmap timeline */
+    .timeline { display: flex; align-items: flex-start; gap: 0; margin-top: 1.3rem; width: 100%; }
+    .phase { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; flex: 1; }
+    .phase .steps { display: flex; gap: 0.4rem; }
+    .step { width: 2.4rem; height: 2.4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; background: #1e1b4b; border: 2px solid #818cf8; color: #fff; }
+    .step.heart { border-color: var(--accent); background: #3b1666; box-shadow: 0 0 14px rgba(168,85,247,0.55); }
+    .phase-name { font-size: 0.72rem; color: #9aa4bd; text-align: center; }
+    .connector { flex: 0 0 1.6rem; height: 2px; background: linear-gradient(90deg, #818cf8, #a855f7); margin-top: 1.2rem; }
+
+    /* fan diagram (composition) */
+    .fan { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.2rem; }
+    .fan .sources { display: flex; flex-direction: column; gap: 0.5rem; }
+    .fan .arrow { font-size: 1.6rem; color: var(--accent); }
+    .fan .target { padding: 1.3rem 1.6rem; }
+
+    /* generic left-to-right chain diagram */
+    .chain { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; margin-top: 1.2rem; }
+    .chain .card { flex: 1; min-width: 130px; text-align: center; }
+    .chain .arrow { font-size: 1.4rem; color: var(--accent); flex: 0 0 auto; }
+    .chain .card h4 { font-size: 0.85rem; }
+    .chain .card p { font-size: 0.72rem; }
+  </style>
+</head>
+<body>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ============ TITLE ============ -->
+      <section>
+        <h1 style="font-size: 3.4rem;">Tour<span class="gradient-text">Builder</span></h1>
+        <p class="msg">An AR tour-guide app — sprites, 3D models and audio stories — built as ten independent components.</p>
+        <p class="small" style="margin-top:1.5rem;">Maria Elia &nbsp;·&nbsp; Nicolas Hellthaler &nbsp;·&nbsp; Location-Based WebXR Lab, Team 2</p>
+      </section>
+
+      <!-- ============ MOTIVATION ============ -->
+      <section>
+        <span class="corner-label">intro</span>
+        <h2>One walk, one QR code, one story per stop</h2>
+        <div class="chain fragment fade-up">
+          <div class="card"><h4>Author walks the route</h4><p>drops waypoints</p></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>Exports tour.zip</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>Uploads to Drive</h4><p>Dropbox / OneDrive</p></div>
+          <div class="arrow">→</div>
+          <div class="card highlight"><h4>Generates a QR code</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>Visitor scans it</h4><p>walks the AR trail</p></div>
+        </div>
+        <p class="msg" style="margin-top:1.3rem;">No backend — the zip is the whole tour.</p>
+      </section>
+
+      <!-- ============ ARCHITECTURE: STACK ============ -->
+      <section>
+        <span class="corner-label">architecture</span>
+        <h2>Three layers, one direction</h2>
+        <div class="chain">
+          <div class="card"><h4>Our app</h4><p>TourBuilder</p></div>
+          <div class="arrow">→</div>
+          <div class="card highlight"><h4>app-framework</h4><p>WebXR · sensors · storage · replay</p></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>gps-plus-slam-js</h4><p>closed-source, GPS↔AR alignment</p></div>
+        </div>
+        <p class="msg" style="margin-top:1.3rem;">The framework never imports from us; the closed core never imports from the framework.</p>
+        <p class="credit">Built on <code>cs-util-com/location-based-webxr</code> (open-source fork)</p>
+      </section>
+
+      <!-- ============ ARCHITECTURE: tour.json ============ -->
+      <section>
+        <span class="corner-label">architecture</span>
+        <h2>tour.json is the on-disk contract</h2>
+        <p class="msg">Waypoints, radii, assets, breadcrumb trail — written once, read by both modes.</p>
+        <div class="diagram-container" style="justify-content:flex-start; display:block;">
+          <pre><code class="language-json" data-trim>
+{
+  "waypoints": [
+    { "lat": 50.778, "lon": 6.089,
+      "prefetchRadius": 25, "activeRadius": 10 }
+  ],
+  "pois": [
+    { "id": "knight-1", "assets": ["sprite-1", "audio-1"] }
+  ],
+  "breadcrumb": [
+    { "lat": 50.778, "lon": 6.089 }
+  ]
+}
+          </code></pre>
+        </div>
+        <p class="msg" style="margin-top:0.8rem;">Lat/lon appears only here — everything downstream is world-space meters.</p>
+      </section>
+
+      <!-- ============ ARCHITECTURE: store ============ -->
+      <section>
+        <span class="corner-label">architecture</span>
+        <h2>The store is the runtime contract</h2>
+        <div class="chain">
+          <div class="card highlight"><h4>Redux store</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>2D UI · Three.js scene</h4><p>Live GPS state</p></div>
+        </div>
+        <div class="chain" style="margin-top:0.6rem;">
+          <div class="card highlight"><h4>Redux store</h4></div>
+          <div class="arrow" style="font-size:1rem;">⇢ id only, never bytes ⇢</div>
+          <div class="card"><h4>asset-provider</h4><p>getAssetUrl(id) / release(id)</p></div>
+        </div>
+        <p class="msg" style="margin-top:1.3rem;">The store never holds asset bytes — that's what let us build it before the asset pipeline existed.</p>
+      </section>
+
+      <!-- ============ APPROACH: plan first ============ -->
+      <section>
+        <span class="corner-label">approach</span>
+        <h2>Plan first, then prototype</h2>
+        <div class="chain">
+          <div class="card"><h4>plan.md</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>LLM critiques it</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>3 throwaway prototypes</h4><p>ChatGPT / Claude / Gemini</p></div>
+          <div class="arrow">→</div>
+          <div class="card highlight"><h4>Pick the best</h4><p>build for real</p></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>Unit + replay-e2e tests</h4></div>
+        </div>
+      </section>
+
+      <!-- ============ APPROACH: pair programming ============ -->
+      <section>
+        <span class="corner-label">approach</span>
+        <h2>Whoever planned it, the other one built it</h2>
+        <div class="card-grid two fragment fade-up">
+          <div class="card highlight"><h4>Component N</h4><p>One of us writes the plan.md, the other implements it — Driver / Navigator, swapped every 30–60 min.</p></div>
+          <div class="card"><h4>Component N+1</h4><p>Roles swap — the implementer now plans, the planner now builds.</p></div>
+        </div>
+        <p class="msg" style="margin-top:1rem;">Every component saw both of us in both roles.</p>
+      </section>
+
+      <!-- ============ COMPONENTS: roadmap ============ -->
+      <section>
+        <span class="corner-label">components</span>
+        <h2>Ten components, each proven alone first</h2>
+        <div class="timeline fragment fade-up">
+          <div class="phase">
+            <div class="steps"><div class="step">1</div><div class="step">2</div></div>
+            <div class="phase-name">Warm-ups</div>
+          </div>
+          <div class="connector"></div>
+          <div class="phase">
+            <div class="steps"><div class="step">3</div></div>
+            <div class="phase-name">Contract</div>
+          </div>
+          <div class="connector"></div>
+          <div class="phase">
+            <div class="steps"><div class="step heart">4</div></div>
+            <div class="phase-name">Heart</div>
+          </div>
+          <div class="connector"></div>
+          <div class="phase">
+            <div class="steps"><div class="step">5</div><div class="step">6</div></div>
+            <div class="phase-name">Export / load</div>
+          </div>
+          <div class="connector"></div>
+          <div class="phase">
+            <div class="steps"><div class="step">7</div><div class="step">8</div><div class="step">9</div><div class="step">10</div></div>
+            <div class="phase-name">Composition</div>
+          </div>
+        </div>
+        <p class="msg" style="margin-top:1.3rem;">Only the AR scene (8) is built last — it composes everything before it.</p>
+      </section>
+
+      <!-- ============ COMPONENT: billboard ============ -->
+      <section>
+        <span class="corner-label">components · warm-up</span>
+        <h2>A billboard that turns to face you, never tilts</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/billboard/" loading="lazy" allow="autoplay"></iframe></div>
+        <p class="frame-label">Cylindrical yaw only, click plays spatial audio — the seed of the later AR knights.</p>
+      </section>
+
+      <!-- ============ COMPONENT: in-world text ============ -->
+      <section>
+        <span class="corner-label">components · warm-up</span>
+        <h2>The same billboard math, now carrying a story</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/in-world-text/" loading="lazy"></iframe></div>
+        <p class="frame-label">HTML-in-3D, with a CanvasTexture fallback so it also works inside WebXR.</p>
+      </section>
+
+      <!-- ============ COMPONENT: store demo ============ -->
+      <section>
+        <span class="corner-label">components · contract</span>
+        <h2>tour.json + Redux, live and interactive</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/store/" loading="lazy"></iframe></div>
+        <p class="frame-label">Two real store instances — click an action, watch the state update.</p>
+      </section>
+
+      <!-- ============ COMPONENT: proximity ============ -->
+      <section>
+        <span class="corner-label">components · the heart</span>
+        <h2>Hysteresis keeps noisy GPS from flickering</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/proximity/" loading="lazy"></iframe></div>
+        <p class="frame-label">IDLE → PREFETCHING (≈25m) → ACTIVE (≈10m) — a real Task 1 walk, replayed.</p>
+      </section>
+
+      <!-- ============ COMPONENT: packaging ============ -->
+      <section>
+        <span class="corner-label">components · export</span>
+        <h2>An uncompressed zip, so any asset is a cheap slice</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/packaging/" loading="lazy"></iframe></div>
+        <p class="frame-label">ZIP "store" mode, no DEFLATE — the loading side reads one asset without unzipping the rest.</p>
+      </section>
+
+      <!-- ============ COMPONENT: cloud-loader ============ -->
+      <section>
+        <span class="corner-label">components · load</span>
+        <h2>Every cloud drive answers byte-range reads differently</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/cloud-loader/" loading="lazy"></iframe></div>
+        <p class="frame-label">Google Drive, Dropbox, OneDrive — each needed its own CORS + redirect handling.</p>
+      </section>
+
+      <!-- ============ COMPONENT: composition ============ -->
+      <section>
+        <span class="corner-label">components · composition</span>
+        <h2>Map, onboarding and authoring feed the AR scene</h2>
+        <div class="fan fragment fade-up">
+          <div class="sources">
+            <div class="card" style="border-color:#818cf8;"><h4 style="font-size:0.85rem;">2D map</h4></div>
+            <div class="card" style="border-color:#818cf8;"><h4 style="font-size:0.85rem;">Onboarding gate</h4></div>
+            <div class="card" style="border-color:#818cf8;"><h4 style="font-size:0.85rem;">Authoring tools</h4></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="card highlight target"><h4>AR viewing scene</h4></div>
+        </div>
+        <p class="msg" style="margin-top:1.3rem;">Nothing new here — the AR scene mostly just wires up components 1–7.</p>
+      </section>
+
+      <!-- ============ LIVE DEMO ============ -->
+      <section>
+        <span class="corner-label">demo</span>
+        <h2>The composed app, live</h2>
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/" loading="lazy" allow="camera; geolocation; xr-spatial-tracking; autoplay"></iframe></div>
+        <p class="frame-label">tourbuilder.mariaelia.de — author a tiny tour, export it, scan the QR into viewing mode.</p>
+      </section>
+
+      <!-- ============ RESULTS ============ -->
+      <section>
+        <span class="corner-label">results</span>
+        <h2>A visitor's real GPS track, crossing real zones</h2>
+        <img class="shot fragment fade-in" src="assets/map-real-walk.png" alt="2D map replaying a real outdoor walk in Aachen, waypoints turning green as they are reached">
+        <p class="credit">Task 1 outdoor recording, Aachen — 22 Jun 2026</p>
+      </section>
+
+      <!-- ============ PROBLEM 1 ============ -->
+      <section>
+        <span class="corner-label">problems</span>
+        <h2>We had no AR-capable phone on hand</h2>
+        <p class="msg">Had to borrow one — pushed us toward desktop-replayable demos from day one.</p>
+      </section>
+
+      <!-- ============ PROBLEM 2 ============ -->
+      <section>
+        <span class="corner-label">problems</span>
+        <h2>The shared contract was the hardest thing to agree first</h2>
+        <p class="msg">"Kind of hard to find out what the project is supposed to look like in the end" — diary, Component 1.</p>
+      </section>
+
+      <!-- ============ PROBLEM 3: feedback ============ -->
+      <section>
+        <span class="corner-label">problems</span>
+        <h2>Feedback said the map was too small — we listened</h2>
+        <div class="two-col">
+          <div>
+            <img class="shot" src="assets/authoring-before-feedback.png" alt="Earlier authoring screen with a small cramped map">
+            <p class="frame-label">Before: fixed-size map, permanently visible panel.</p>
+          </div>
+          <div>
+            <p class="msg">Redesigned full-bleed, panel floats on top, torn down cleanly on export.</p>
+          </div>
+        </div>
+        <p class="credit">Feedback: review call, 7 Sept 2026</p>
+      </section>
+
+      <!-- ============ LEARNING 1 ============ -->
+      <section>
+        <span class="corner-label">what worked</span>
+        <h2>Isolated components meant most needed no phone at all</h2>
+        <p class="msg">Every component got its own demo, proven on desktop against a real recorded walk — 9 of 10 needed no phone.</p>
+      </section>
+
+      <!-- ============ LEARNING 2 ============ -->
+      <section>
+        <span class="corner-label">what worked</span>
+        <h2>Three LLM prototypes beat trusting one blindly</h2>
+        <p class="msg">Same plan into ChatGPT, Claude and Gemini — compared on UX and code, borrowed the best ideas from each.</p>
+      </section>
+
+      <!-- ============ AI REFLECTION ============ -->
+      <section>
+        <span class="corner-label">AI reflection</span>
+        <h2>The plan forced the AI to read our contract, not invent its own</h2>
+        <ul class="compact">
+          <li>Every component started as a plan.md, then three competing prototypes — never one AI's first answer, unreviewed.</li>
+          <li>Building inside an existing framework made the plan-review step matter more than on greenfield work.</li>
+        </ul>
+      </section>
+
+      <!-- ============ SUMMARY (retrospective, not "thank you") ============ -->
+      <section>
+        <span class="corner-label">summary</span>
+        <h2>What we presented</h2>
+        <ul class="compact">
+          <li class="fragment fade-up">10 isolated, individually-tested components → composed into authoring + viewing modes</li>
+          <li class="fragment fade-up">Pure world-space logic, proven deterministically against real outdoor recordings</li>
+          <li class="fragment fade-up">Zero backend — a QR code and an everyday cloud drive is the whole deployment</li>
+          <li class="fragment fade-up">Hardest part: agreeing the shared contract before writing any component</li>
+        </ul>
+        <p class="msg fragment fade-up" style="margin-top:1rem;">Starting point for discussion — happy to take questions on any of it.</p>
+      </section>
+
+      <!-- ============ APPENDIX: technical fallback (not part of the timed talk) ============ -->
+      <section>
+        <span class="corner-label">backup</span>
+        <h2>Backup: billboard demo, if it won't load live</h2>
+        <img class="shot" src="assets/billboard-early.png" alt="Billboard demo screenshot" style="max-height:60vh;">
+      </section>
+
+      <section>
+        <span class="corner-label">backup</span>
+        <h2>Backup: 2D map, if it won't load live</h2>
+        <img class="shot" src="assets/map-real-walk.png" alt="Map demo screenshot" style="max-height:60vh;">
+        <p class="msg" style="margin-top:1rem;">Keep tourbuilder.mariaelia.de pre-loaded in a browser tab as the primary fallback.</p>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      controls: true,
+      progress: true,
+      center: true,
+      transition: 'slide',
+      transitionSpeed: 'fast',
+      slideNumber: 'c/t',
+      width: 1200,
+      height: 700,
+      plugins: [ RevealHighlight ]
+    });
+  </script>
+</body>
+</html>
