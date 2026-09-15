@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TourBuilder — Team 2 Final Presentation</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"></script>
+
+  <style>
+    :root {
+      --accent: #a855f7;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.16);
+    }
+
+    body, .reveal { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 20% 0%, #1e1b4b, #09090b 80%); color: #eef1f6; }
+    .reveal .slides section { text-align: left; }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.01em; text-transform: none; font-weight: 700; }
+    .reveal h2 { font-size: 2.1rem; line-height: 1.2; margin-bottom: 0.9rem; }
+    .gradient-text { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
+
+    /* section corner label, like a git label */
+
+    .credit { font-size: 0.65rem; color: #6b7280; }
+
+    /* fixed footer, sibling of .slides so it survives slide transitions */
+    .deck-footer { position: fixed; left: 1.4rem; bottom: 0.55rem; font-size: 0.62rem; color: #5b6478; letter-spacing: 0.02em; z-index: 30; pointer-events: none; }
+
+    /* chapter divider slides: no own content — the fixed chapter-header (below)
+       sits centered big on these slides instead, then animates to the top-left
+       corner as the deck moves into that chapter's content slides. */
+    .chapter-divider p.msg { max-width: 32rem; }
+
+    /* fixed chapter header — sibling of .slides, so it survives slide transitions
+       and can animate its own position/opacity independently of them. JS toggles
+       .is-divider / .is-hidden on slidechanged; this transition does the rest. */
+    .chapter-header {
+      position: fixed; top: 1.3rem; left: 1.4rem; z-index: 30;
+      display: flex; align-items: baseline; gap: 0.6rem; text-align: left; pointer-events: none;
+      transition: top 0.6s cubic-bezier(0.2, 0, 0.1, 1), left 0.6s cubic-bezier(0.2, 0, 0.1, 1),
+                  transform 0.6s cubic-bezier(0.2, 0, 0.1, 1), opacity 0.4s ease;
+      opacity: 1;
+    }
+    .chapter-header.is-divider { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .chapter-header.is-hidden { opacity: 0; }
+    .chapter-header .ch-num { font-size: 4.4rem; font-weight: 800; font-family: 'Outfit', sans-serif; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+    .chapter-header .ch-title { font-size: 2.8rem; font-family: 'Outfit', sans-serif; font-weight: 700; letter-spacing: -0.01em; color: #a5b4d4; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+    .card-grid.two { grid-template-columns: repeat(2, 1fr); }
+    .card-grid.four { grid-template-columns: repeat(4, 1fr); }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1.1rem; text-align: left; }
+    .card h4 { margin: 0 0 0.3rem; font-size: 1rem; color: #fff; }
+    .card p { font-size: 0.8rem; color: #9aa4bd; margin: 0; line-height: 1.4; }
+    .card.highlight { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+    .card.stat { text-align: center; }
+    .card.stat .big { font-size: 1.8rem; font-weight: 800; font-family: 'Outfit', sans-serif; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; }
+
+    .diagram-container { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1rem 1.2rem; margin-top: 0.9rem; display: flex; align-items: center; justify-content: center; min-height: 160px; max-height: 400px; overflow: hidden; }
+
+    .frame { width: 100%; border-radius: 12px; border: 1px solid var(--card-border); overflow: hidden; background: #10131a; margin-top: 0.7rem; }
+    .frame iframe { width: 100%; height: 500px; border: 0; display: block; }
+    .frame-label { font-size: 0.78rem; color: #9aa4bd; margin-top: 0.6rem; }
+
+    .shot { border-radius: 12px; border: 1px solid var(--card-border); max-height: 40vh; display: block; margin-top: 0.6rem; }
+
+    .reveal table { font-size: 0.78rem; margin-top: 0.8rem; }
+    .reveal table th { color: var(--accent); text-align: left; }
+    .reveal table td, .reveal table th { padding: 0.3rem 0.8rem; border-bottom: 1px solid var(--card-border); }
+    .reveal table tr.highlight td { background: rgba(168,85,247,0.12); }
+
+    .msg { font-size: 1.05rem; color: #cbd5e1; margin: 0.3rem 0 0.6rem; }
+    ol.compact li, ul.compact li { margin-bottom: 0.4rem; font-size: 0.92rem; }
+    .small { font-size: 0.78rem; color: #9aa4bd; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; align-items: start; }
+    code { color: #c4b5fd; }
+
+    .reveal pre { width: 100%; box-shadow: none; margin-top: 0.9rem; }
+
+    .gitgraph { background: #10131a; border: 1px solid var(--card-border); border-radius: 14px; padding: 0.9rem 1.1rem; margin-top: 0.8rem; font-family: 'Fira Code', monospace; font-size: 0.52rem; line-height: 1.55; white-space: pre; overflow: hidden; max-height: 480px; }
+    .gitgraph div { white-space: pre; }
+    .reveal pre code .highlight-line { background: rgba(129,140,248,0.25); border-left: 3px solid var(--accent); padding-left: 0.6em; margin-left: -0.6em; opacity: 1 !important; }
+    .reveal pre code { white-space: pre-wrap; word-break: break-word; font-size: 0.78rem; max-height: none; padding: 1rem 1.2rem; }
+
+    /* fan diagram (composition) */
+    .fan { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.2rem; }
+    .fan .sources { display: flex; flex-direction: column; gap: 0.5rem; }
+    .fan .arrow { font-size: 1.6rem; color: var(--accent); }
+    .fan .target { padding: 1.3rem 1.6rem; }
+
+    /* generic left-to-right chain diagram */
+    .chain { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; margin-top: 1.2rem; }
+    .chain .card { flex: 1; min-width: 130px; text-align: center; }
+    .chain .arrow { font-size: 1.4rem; color: var(--accent); flex: 0 0 auto; }
+    .chain .card h4 { font-size: 0.85rem; }
+    .chain .card p { font-size: 0.72rem; }
+
+    /* zigzag flow diagram: rows alternate direction, joined by a turn arrow */
+    .flow { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.2rem; }
+    .flow-row { display: flex; align-items: center; gap: 0.7rem; }
+    .flow-row.reverse { flex-direction: row-reverse; }
+    .flow .card { flex: 1; min-width: 130px; text-align: center; }
+    .flow .card h4 { font-size: 0.85rem; }
+    .flow .card p { font-size: 0.72rem; }
+    .flow .arrow { font-size: 1.4rem; color: var(--accent); flex: 0 0 auto; }
+    .flow-turn { align-self: flex-end; font-size: 1.4rem; color: var(--accent); margin: -0.2rem 6% 0 0; }
+    .flow .icon-card img { width: 46px; height: 46px; object-fit: contain; border-radius: 8px; margin-bottom: 0.4rem; }
+    .flow .transition { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; color: #9aa4bd; font-size: 0.68rem; text-align: center; }
+    .flow .transition .arrow { font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ============ TITLE ============ -->
+      <section>
+        <h1 style="font-size: 3.4rem;">Tour<span class="gradient-text">Builder</span></h1>
+        <p class="msg">An AR tour-guide app — sprites, 3D models and audio stories — built as ten independent components.</p>
+        <p class="small" style="margin-top:1.5rem;">Maria Elia &nbsp;·&nbsp; Nicolas Hellthaler &nbsp;·&nbsp; Location-Based WebXR Lab, Team 2</p>
+      </section>
+
+      <!-- ============ CHAPTER 1: INTRO ============ -->
+      <section class="chapter-divider" data-chapter-num="01" data-chapter-title="Intro"></section>
+
+      <section data-chapter-num="01" data-chapter-title="Intro">
+        <h2>The Vision</h2>
+        <p class="msg">An AR tour-guide app for anywhere a story needs a place:</p>
+        <div class="card-grid">
+          <div class="card highlight"><h4>Museums</h4><p>exhibit-by-exhibit audio &amp; sprite guides, no fixed hardware</p></div>
+          <div class="card highlight"><h4>Historic sites</h4><p>overlay what once stood where it stood</p></div>
+          <div class="card highlight"><h4>City tours</h4><p>self-guided walks, one story per stop</p></div>
+        </div>
+      </section>
+
+      <section data-chapter-num="01" data-chapter-title="Intro">
+        <div class="flow">
+          <div class="flow-row">
+            <div class="card icon-card"><img src="assets/waypoint-icon-22-608480044.jpg" alt=""><h4>Author walks the route</h4><p>drops waypoints</p></div>
+            <div class="transition"><div class="arrow">→</div>exports tour.zip</div>
+            <div class="card icon-card"><img src="assets/onedrive-32300805.png" alt=""><h4>Uploads to Drive</h4><p>Dropbox / OneDrive</p></div>
+          </div>
+          <div class="flow-turn">↓</div>
+          <div class="flow-row reverse">
+            <div class="card icon-card"><img src="assets/extended.svg" alt=""><h4>Generates a QR code</h4></div>
+            <div class="arrow">←</div>
+            <div class="card"><h4>Visitor scans it</h4><p>walks the AR trail</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CHAPTER 2: APPROACH ============ -->
+      <section class="chapter-divider" data-chapter-num="02" data-chapter-title="Approach"></section>
+
+      <section data-chapter-num="02" data-chapter-title="Approach">
+        <h2>Plan first, then prototype</h2>
+        <div class="chain">
+          <div class="card"><h4>plan.md</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>LLM critiques it</h4></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>3 throwaway prototypes</h4><p>ChatGPT / Claude / Gemini</p></div>
+          <div class="arrow">→</div>
+          <div class="card highlight"><h4>Pick the best</h4><p>build for real</p></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>Unit + replay-e2e tests</h4></div>
+        </div>
+      </section>
+
+      <section data-chapter-num="02" data-chapter-title="Approach">
+        <h2>Whoever planned it, the other one built it</h2>
+        <div class="card-grid two fragment fade-up">
+          <div class="card highlight"><h4>Component N</h4><p>One of us writes the plan.md, the other implements it — Driver / Navigator, swapped every 30–60 min.</p></div>
+          <div class="card"><h4>Component N+1</h4><p>Roles swap — the implementer now plans, the planner now builds.</p></div>
+        </div>
+        <p class="msg" style="margin-top:1rem;">Every component saw both of us in both roles.</p>
+      </section>
+
+      <!-- ============ CHAPTER 3: COMPONENTS ============ -->
+      <section class="chapter-divider" data-chapter-num="03" data-chapter-title="Components"></section>
+
+      <!-- ============ COMPONENT: tour.json ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <h2>tour.json is the on-disk contract</h2>
+        <div class="diagram-container" style="justify-content:flex-start; display:block;">
+          <pre style="font-size:0.62rem; line-height:1.6;"><code class="language-json" data-trim data-noescape data-line-numbers="|2|3|4-12|13-15">
+{
+  "id": "tour-nyc-tour", "name": "NYC Tour", "description": "Take a short Tour around some of NYC's most famous sights!",
+  "assets": [ { "id": "asset-1", "type": "audio", "filename": "assets/asset-1.mp3" }, ... ],
+  "waypoints": [
+    {
+      "id": "wp-1",
+      "position": { "lat": 40.7572, "lon": -73.9898, "altitude": 12 },
+      "prefetchRadius": 25, "activeRadius": 10,
+      "content": { "sprite": "asset-2", "audio": "asset-1", "transcript": "Welcome to 42nd Street..." }
+    },
+    ...
+  ],
+  "breadcrumb": [
+    { "lat": 40.75723, "lon": -73.98979, "altitude": 12 }, ...
+  ]
+}
+          </code></pre>
+        </div>
+      </section>
+
+      <!-- ============ COMPONENT: billboard ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/billboard/" loading="lazy" allow="autoplay"></iframe></div>
+      </section>
+
+      <!-- ============ COMPONENT: in-world-text ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/in-world-text/" loading="lazy"></iframe></div>
+      </section>
+
+      <!-- ============ COMPONENT: 2d map ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/map/" loading="lazy"></iframe></div>
+      </section>
+
+      <!-- ============ COMPONENT: onboarding ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/onboarding/" loading="lazy" allow="camera; geolocation;"></iframe></div>
+      </section>
+
+      <!-- ============ COMPONENT: packaging + cloud-storage (figure) ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <h2>Pack once, read anywhere, one byte-range at a time</h2>
+        <div class="chain">
+          <div class="card"><h4>Assets</h4><p>audio, sprite, model files</p></div>
+          <div class="arrow">→</div>
+          <div class="card highlight"><h4>zip, STORE mode</h4><p>no DEFLATE</p></div>
+          <div class="arrow">→</div>
+          <div class="card"><h4>One byte-range read</h4><p>= one asset, rest untouched</p></div>
+        </div>
+        <div class="fan" style="margin-top:1rem;">
+          <div class="sources">
+            <div class="card" style="border-color:#818cf8;"><h4 style="font-size:0.85rem;">Google Drive</h4></div>
+            <div class="card" style="border-color:#818cf8;"><h4 style="font-size:0.85rem;">Dropbox</h4></div>
+            <div class="card" style="border-color:#818cf8;"><h4 style="font-size:0.85rem;">OneDrive</h4></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="card highlight target"><h4>Unified byte-range loader</h4></div>
+        </div>
+        <p class="msg" style="margin-top:1rem;">Packaging bundles the zip; cloud-storage reads it back — each provider needed its own CORS + redirect handling behind one shared interface.</p>
+      </section>
+
+      <!-- ============ COMPONENT: authoring ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/authoring/" loading="lazy" allow="camera; geolocation"></iframe></div>
+      </section>
+
+      <!-- ============ COMPONENT: proximity ============ -->
+      <section data-chapter-num="03" data-chapter-title="Components">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/src/components/proximity/" loading="lazy"></iframe></div>
+      </section>
+
+      <!-- ============ CHAPTER 4: CHALLENGES & WHAT WORKED WELL ============ -->
+      <section class="chapter-divider" data-chapter-num="04" data-chapter-title="Challenges &amp; What Worked Well"></section>
+
+      <section data-chapter-num="04" data-chapter-title="Challenges &amp; What Worked Well">
+        <div class="two-col">
+          <div>
+            <h4 style="color:#f87171; font-size:0.95rem;">Challenges</h4>
+            <ul class="compact">
+              <li>No AR-capable phone on hand -> every component had to be desktop-replayable from day one</li>
+              <li>Building components without app integration</li>
+              <li>AR Text is difficult</li>
+              <li>Link manipulation is difficult</li>
+              <li>Integrating third-party serviced (Google Drive, DropBox, OneDrive) is difficult</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:#4ade80; font-size:0.95rem;">What worked</h4>
+            <ul class="compact">
+              <li>Solid tour.json + store contract saved LOTS of time</li>
+              <li>Stay up-to-date with upstream -> use new features (OSM)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CHAPTER 5: TOURBUILDER APP ============ -->
+      <section class="chapter-divider" data-chapter-num="05" data-chapter-title="Tourbuilder App"></section>
+
+      <section data-chapter-num="05" data-chapter-title="Tourbuilder App">
+        <div class="frame"><iframe src="https://tourbuilder.mariaelia.de/" loading="lazy" allow="camera; geolocation; xr-spatial-tracking; autoplay"></iframe></div>
+      </section>
+
+      <!-- ============ CHAPTER 6: KEY ENABLERS ============ -->
+      <section class="chapter-divider" data-chapter-num="06" data-chapter-title="Key Enablers"></section>
+
+      <section data-chapter-num="06" data-chapter-title="Key Enablers">
+        <ul class="compact">
+          <li style="font-size:2.1rem; line-height:1.3;">Fixed tour.json + store early → every later component built and tested alone.</li>
+          <li style="font-size:2.1rem; line-height:1.3;">Context & structure (task.md, CLAUDE.md, conventional commits, feature branches) → better LLM output, easier debugging.</li>
+          <li style="font-size:2.1rem; line-height:1.3;">Skills — superpowers, impeccable (plan-first + TDD + interactive UI design) → more directed changes, less undesired behavior.</li>
+          <li style="font-size:2.1rem; line-height:1.3;">GitHub Pages → testable, usable deployment.</li>
+        </ul>
+      </section>
+
+      <!-- ============ CHAPTER 7: SUMMARY ============ -->
+      <section class="chapter-divider" data-chapter-num="07" data-chapter-title="Summary"></section>
+
+      <section data-chapter-num="07" data-chapter-title="Summary">
+        <h2>124 commits, 10 feature branches</h2>
+        <div class="gitgraph">
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">f3c5b702</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: center divider in onboarding
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">60b3beeb</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: make gallery grid layout
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">f19cf23a</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: remove hud card from desktop preview
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">b7c3aa9a</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: update authoring view component demo
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">6f0ffb3d</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: improve onbaording demo ui
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">fb3575bf</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: more adjustments to make spacing and sizing match
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">4062f16f</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: make component headers more consistent
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">8921ec3b</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> fix: broken e2e test
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">5f61ed9c</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> fix: authoring lint errors
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">afb56467</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: make permission component demo align visually with prod app
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">9f3dc202</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> feat: make component demo title consistent
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">8f6a5992</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): show map by default in AR/preview walk-through, double autowalk speed
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">786667ef</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): map centering on mobile
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">9c20495a</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): make preview auto-walk opt-in with a pointer hint
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">b4d83bf9</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): tear down the full-bleed map screen on export
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">d249c85f</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): redesign authoring map as full-bleed with floating panel
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">498709cb</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): tell visitors which link hosts the paste-a-link field accepts
+<span style='color:#e5e7eb'>*</span>   <span style="color:#fbbf24">1246d5be</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> Merge branch &#x27;origin/fix/ar-error&#x27; into main
+<span style="color:#4ade80">|</span><span style="color:#fbbf24">\</span>
+<span style="color:#4ade80">|</span> * <span style="color:#fbbf24">6b8e1c14</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> refactor: remove Google Drive from hint for share link input
+<span style="color:#4ade80">|</span> * <span style="color:#fbbf24">a341cf29</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> fix: android no ar-available black screen
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">|</span>   <span style="color:#fbbf24">5e3587e5</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> Merge branch &#x27;fix/simon-feedback&#x27; into main
+<span style="color:#fbbf24">|</span><span style="color:#c084fc">\</span> <span style="color:#fbbf24">\</span>
+<span style="color:#fbbf24">|</span> <span style="color:#c084fc">|</span><span style="color:#fbbf24">/</span>
+<span style="color:#fbbf24">|</span><span style="color:#fbbf24">/</span><span style="color:#c084fc">|</span>
+<span style="color:#fbbf24">|</span> * <span style="color:#fbbf24">91964a21</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): make landing screen deploy-safe and reformat touched files
+<span style="color:#fbbf24">|</span> * <span style="color:#fbbf24">d67c60df</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> fix: use correct links
+<span style="color:#fbbf24">|</span> * <span style="color:#fbbf24">af03e7f0</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> fix: deploy-ready landing screen
+<span style="color:#fbbf24">|</span> * <span style="color:#fbbf24">49575d67</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): add landing screen with create/link/demo entry points
+<span style='color:#e5e7eb'>*</span> <span style="color:#c084fc">|</span> <span style="color:#fbbf24">db6c9d6f</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> fix(tourbuilder): avoid this-alias in Blob.stream jsdom polyfill
+<span style='color:#e5e7eb'>*</span> <span style="color:#c084fc">|</span> <span style="color:#fbbf24">1c4137d5</span> <span style="opacity:0.6">2026-09-15</span> <span style="font-weight:700">Nico Hellthaler</span> fix(post-merge): clear knip + TourBuilder fallout from upstream/main merge
+<span style="color:#c084fc">|</span><span style="color:#c084fc">/</span>
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">943cc1f0</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): add a demo-tour chip to the Authoring landing screen
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">64d0b541</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): actually constrain the share-link box width
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">75cf1c89</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): wrap the long share link instead of overflowing the panel
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">a35e0478</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): stop first-scroll teleport from dvh chrome collapse
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">0644b54c</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): make overflow override survive Vite&#x27;s prod build
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">4816b6c7</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): correct Pages custom domain to tourbuilder.mariaelia.de
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">bbb33064</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): fix html overflow so mobile touch-scroll actually works
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">74940e13</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): stop authoring map from swallowing page scroll
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">b2dcbb2c</span> <span style="opacity:0.6">2026-09-14</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): stop autopilot toggle resetting position, refresh map on restart
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">6a89919c</span> <span style="opacity:0.6">2026-09-05</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): scroll new waypoint into view on drop
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">41ed03e8</span> <span style="opacity:0.6">2026-09-05</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): mobile-first CSS pass + phone-testing fixes
+<span style='color:#e5e7eb'>*</span> <span style="color:#fbbf24">13ae84c4</span> <span style="opacity:0.6">2026-09-04</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): deploy TourBuilder to GitHub Pages via Actions
+<span style="color:#c084fc">|</span> * <span style="color:#fbbf24">5cb1b77b</span> <span style="opacity:0.6">2026-09-03</span> <span style="font-weight:700">Maria Elia</span> fix(tourbuilder): make dismissing the HUD notice actually hide it
+<span style="color:#c084fc">|</span> * <span style="color:#fbbf24">901bd610</span> <span style="opacity:0.6">2026-09-03</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): notify the visitor in-session when the tour is complete
+<span style="color:#c084fc">|</span> * <span style="color:#fbbf24">338b7bab</span> <span style="opacity:0.6">2026-09-03</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): add End-of-Tour screen, shown when every stop is visited
+<span style="color:#c084fc">|</span> * <span style="color:#fbbf24">38984d3d</span> <span style="opacity:0.6">2026-09-03</span> <span style="font-weight:700">Maria Elia</span> feat(tourbuilder): make the in-session HUD notice dismissible
+<span style="color:#c084fc">|</span> * <span style="color:#fbbf24">c1822c9f</span> <span style="opacity:0.6">2026-09-03</span> <span style="font-weight:700">Maria Elia</span> docs(tourbuilder): Plan a end-of-tour component
+<span style="color:#c084fc">|</span> * <span style="color:#fbbf24">1519fdff</span> <span style="opacity:0.6">2026-09-03</span> <span style="font-weight:700">Maria Elia</span> docs(tourbuilder): mention sprint (Shift) in the preview HUD hint
+        </div>
+        <p class="small" style="margin-top:0.6rem;">Excerpt of <code>git log --graph</code> on the TourBuilder package — 124 commits across 10 feature branches, ~10 weeks, merged back into main.</p>
+      </section>
+
+      <section data-chapter-num="07" data-chapter-title="Summary">
+        <h2>What we reached</h2>
+        <div class="card-grid four fragment fade-up">
+          <div class="card stat highlight"><span class="big">10</span><p>isolated, tested components</p></div>
+          <div class="card stat"><span class="big">124</span><p>commits, ~10 weeks</p></div>
+          <div class="card stat"><span class="big">55k</span><p>lines changed</p></div>
+          <div class="card stat"><span class="big">632</span><p>automated tests</p></div>
+        </div>
+        <p class="msg fragment fade-up" style="margin-top:1.3rem;">Pure world-space logic, proven deterministically against real outdoor recordings.</p>
+        <p class="msg fragment fade-up">Starting point for discussion — happy to take questions on any of it.</p>
+      </section>
+
+    </div>
+    <div class="deck-footer">25 Sept 2026 &nbsp;·&nbsp; Maria Elia &amp; Nicolas Hellthaler &nbsp;·&nbsp; TourBuilder</div>
+    <div class="chapter-header is-hidden" id="chapter-header">
+      <span class="ch-num"></span>
+      <span class="ch-title"></span>
+    </div>
+  </div>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      controls: true,
+      progress: true,
+      center: true,
+      transition: 'slide',
+      transitionSpeed: 'fast',
+      slideNumber: 'c/t',
+      width: 1200,
+      height: 700,
+      plugins: [ RevealHighlight ]
+    }).then(() => {
+      const header = document.getElementById('chapter-header');
+      const numEl = header.querySelector('.ch-num');
+      const titleEl = header.querySelector('.ch-title');
+
+      function syncChapterHeader(slide) {
+        const num = slide.dataset.chapterNum;
+        if (!num) {
+          header.classList.add('is-hidden');
+          return;
+        }
+        numEl.textContent = num;
+        titleEl.textContent = slide.dataset.chapterTitle;
+        header.classList.remove('is-hidden');
+        header.classList.toggle('is-divider', slide.classList.contains('chapter-divider'));
+      }
+
+      Reveal.on('slidechanged', event => syncChapterHeader(event.currentSlide));
+      syncChapterHeader(Reveal.getCurrentSlide());
+    });
+  </script>
+</body>
+</html>

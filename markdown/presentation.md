@@ -1,3 +1,5 @@
+intro slide: what does project do? Explain what the goal is
+
 ## Title Page
 
 GPS+SLAM Tour Builder
@@ -46,18 +48,18 @@ Easy to use:
 --- 
 
 Components:
- - onboarding (prompt for camera + location) ![alt text](image-3.png)
- - tour data model + store (our data model) (tour.json as example)
+ - onboarding (prompt for camera + location)
+ - tour data model + store (our data model)
+ - billboard 
+ - in-world-text 
  - authoring components:
-    - packaging (tour.json + assets -> zip and hosted zip link -> qr + tour link)
-    - cloud-storage (fetch relevant data from hosted zip from DropBox/OneDrive/GoogleDrive)
-    - authoring (UI to enter tour name + drop waypoints + allow tour-link creation) (updated authoring view screenshot from deployed app)
+    - packaging
+    - cloud-storage
+    - authoring
  - walk tour components:
-    - billboard (floating clickable image + audio) ![alt text](image.png)
-    - in-world-text (floating, navigatable text) ![alt text](image-1.png)
-    - proximity (detect user proximity to waypoint for asset fetching and visibility toggling) ![alt text](image-2.png)
-    - 2d map (simple OSM map to display user location + waypoints) ![alt text](image-4.png)
-    - ar scene (composite threejs scene to put everything together)
+    - proximity 
+    - 2d map 
+    - ar scene
 
 [Slide-show-ish. Images only / json code for data model]
 
@@ -78,6 +80,20 @@ Technical challenges:
 
 ---
 
+## Tourbuilder App (4.)
+
+Desktop: Demo Video of Authoring after polish
+
+--- 
+
+    + NYC Tour before polish
+
+---
+
+Phone: Demo Video of Walking a Tour after polish
+
+---
+
 ## Key Learnings (2. & 3.)
 
  - UX and responsive design is DIFFICULT
@@ -86,29 +102,15 @@ Technical challenges:
 
 ## Helpful Tools & Workflows (2., 3., 6.)
 
-stay up-to-date with upstream -> use new features (OSM)
-context and structure management: -> better LLM output + easier debugging
- - task as md, claude.md
- - conventional commits
- - feature branches
-skills: superpowers (plan first + tdd + interactive UI design) -> more directed changes, less undesired behaviour
-github pages -> testable and usabe deployment
+ - stay up-to-date with upstream -> use new features (OSM)
+ - context and structure management: -> better LLM output + easier debugging
+    - task as md, claude.md
+    - conventional commits
+    - feature branches
+ - skills: superpowers, impeccable (plan first + tdd + interactive UI design) -> more directed changes, less undesired behaviour
+ - github pages -> testable and usabe deployment
 
 [arrows with advantages show up one by one on next press]
-
----
-
-## Our App (4.)
-
-Desktop: Demo Video of Authoring after polish
-
---- 
-
-    + NYC Tour before polish
-
---- 
-
-Phone: Demo Video of Walking a Tour after polish
 
 ---
 
