@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS+SLAM Tour Builder — Final Presentation</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --r-main-font: 'Inter', sans-serif;
+      --r-heading-font: 'Outfit', sans-serif;
+      --r-code-font: 'Fira Code', monospace;
+      --accent: #5ec9c0;
+    }
+    .reveal h1, .reveal h2, .reveal h3 { font-family: var(--r-heading-font); text-transform: none; }
+    .reveal h1 { color: var(--accent); }
+    .reveal section img { border: none; box-shadow: 0 8px 30px rgba(0,0,0,.4); border-radius: 6px; }
+    .reveal .placeholder {
+      border: 2px dashed rgba(255,255,255,.35);
+      border-radius: 10px;
+      padding: 2em;
+      font-size: .55em;
+      color: rgba(255,255,255,.6);
+      text-align: center;
+    }
+    .reveal table { font-size: .6em; }
+    .reveal .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5em; text-align: left; }
+    .reveal .cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; text-align: left; }
+    .reveal .small { font-size: .55em; }
+    .reveal .tag {
+      display: inline-block; background: var(--accent); color: #04302c;
+      border-radius: 4px; padding: .1em .6em; font-size: .5em; font-weight: 600;
+      font-family: var(--r-code-font);
+    }
+    .reveal ul, .reveal ol { display: block; }
+    iframe.embed { width: 100%; height: 65vh; border: none; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 0. TITLE -->
+      <section>
+        <h1>GPS+SLAM Tour Builder</h1>
+        <p class="small">An outdoor AR audio tour-guide prototype</p>
+        <p class="small">Team: <em>&lt;names&gt;</em> &middot; Software Lab &middot; <em>&lt;date&gt;</em></p>
+      </section>
+
+      <!-- 1. INTRODUCTION -->
+      <section>
+        <section>
+          <h2>1. Introduction</h2>
+          <p class="small">What system did we build, and why?</p>
+        </section>
+        <section>
+          <h3>The idea</h3>
+          <p class="small">
+            An AR "tour guide": visitors walk a real outdoor site, and content
+            (3D models, sprites, spatialized audio stories) appears anchored
+            to real-world GPS coordinates as they get close to a waypoint —
+            no native app, no VPS, works straight from a QR code in the browser.
+          </p>
+        </section>
+        <section>
+          <h3>Motivation</h3>
+          <ul class="small">
+            <li>Museum trails, campus tours, scavenger hunts, heritage-site guides</li>
+            <li>Zero-install: point phone camera at QR &rarr; AR opens directly in browser</li>
+            <li>No native SDK, no store review, works offline once loaded</li>
+            <li>Built on <span class="tag">gps-plus-slam-app-framework</span> — GPS&harr;AR sensor fusion that keeps 3D content pinned outdoors</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Two roles, one tour</h3>
+          <div class="two-col small">
+            <div>
+              <h4>Authoring</h4>
+              <p>Walk the site, drop waypoints at your live GPS position,
+                attach a model/sprite + audio story, export a <code>tour.zip</code>.</p>
+            </div>
+            <div>
+              <h4>Viewing</h4>
+              <p>Visitor opens the tour link/QR, walks around, content
+                prefetches at 25&nbsp;m and appears at 10&nbsp;m, taps to play the story.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 2 & 3. IMPLEMENTATION DETAILS -->
+      <section>
+        <section>
+          <h2>2–3. Implementation details &amp; learnings</h2>
+          <p class="small">Built one isolated, independently-runnable component at a time</p>
+        </section>
+        <section>
+          <h3>Approach: components before composition</h3>
+          <p class="small">
+            Each component lives under <code>src/components/&lt;name&gt;/</code> with
+            its own demo page and pure unit-tested <code>core/</code> — no
+            dependency on any sibling component. Composition into the two app
+            modes (Authoring / Viewing) came last, not first.
+          </p>
+          <div class="placeholder">📷 diagram: components → composition pipeline</div>
+        </section>
+        <section>
+          <h3>The 10 components</h3>
+          <table class="small">
+            <tr><th>#</th><th>Component</th><th>What it does</th></tr>
+            <tr><td>1</td><td>Clickable billboard</td><td>Yaw-to-face sprite + spatial audio + transport panel</td></tr>
+            <tr><td>2</td><td>In-world text</td><td>Billboarded paginated text panel</td></tr>
+            <tr><td>3</td><td>Tour data model + store</td><td>Schema, validation, Redux slices</td></tr>
+            <tr><td>4</td><td>Proximity &amp; zone machine</td><td>IDLE→PREFETCHING→ACTIVE with hysteresis</td></tr>
+            <tr><td>5</td><td>Packaging &amp; QR</td><td>Bundles tour + assets into <code>tour.zip</code>, QR link</td></tr>
+            <tr><td>6</td><td>Cloud-storage tour source</td><td>Byte-range streaming of a hosted ZIP</td></tr>
+            <tr><td>7</td><td>2D map overview</td><td>Leaflet map, live visitor + waypoint dots</td></tr>
+            <tr><td>8</td><td>AR viewing scene</td><td>Geo→world anchoring, knights, tap-to-play stories</td></tr>
+            <tr><td>9</td><td>Onboarding gate</td><td>Camera/GPS permission checklist + Start gesture</td></tr>
+            <tr><td>10</td><td>Authoring tools</td><td>Drop waypoints live, attach assets, record trail, export</td></tr>
+          </table>
+        </section>
+        <section>
+          <h3>The shared contract</h3>
+          <p class="small">
+            Every component talks to one contract: <code>tour.json</code>
+            schema + Redux slices, pinned in <code>plans/Shared-Contract.md</code>
+            (decisions D1–D17) — agreed <em>before</em> splitting component work.
+          </p>
+          <ul class="small">
+            <li>One <code>Waypoint</code> entity — "POI" is a rendering role, not a type</li>
+            <li>Proximity radii are per-waypoint fields; only the hysteresis margin is a global constant</li>
+            <li>Proximity zone machine is pure, GPS-free, world-space (X/Z) only</li>
+            <li>Asset provider: <code>getAssetUrl(id)</code> + <code>release(id)</code>, ref-counted, one interface / three backings</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Interesting problem: prefetch vs. jank</h3>
+          <p class="small">
+            Zone transitions are monotonic single-step (never IDLE↔ACTIVE
+            directly) — this lets the AR scene assume prefetch always
+            precedes activation, so a knight model is already loaded by the
+            time it needs to appear at 10&nbsp;m.
+          </p>
+          <div class="placeholder">🎥 demo recording: waypoint prefetch → activate transition</div>
+        </section>
+        <section>
+          <h3>Interesting problem: replay-testable movement</h3>
+          <p class="small">
+            Anything with a movement dependency (proximity, map, AR scene,
+            authoring) is tested by replaying <strong>real recorded outdoor
+            walks</strong> — deterministic tests on a desktop, no phone needed.
+          </p>
+        </section>
+        <section>
+          <h3>&lt;Team: add your own highlight&gt;</h3>
+          <p class="small">Pick 1–2 more implementation details your team found
+            genuinely interesting — a tricky bug, a design decision you're
+            proud of, a tradeoff you had to make.</p>
+        </section>
+      </section>
+
+      <!-- 4. RESULTS -->
+      <section>
+        <section>
+          <h2>4. Results</h2>
+          <p class="small">What the finished tour builder can do today</p>
+        </section>
+        <section>
+          <h3>Live demo</h3>
+          <div class="placeholder">
+            🎥 embed a demo recording or screen capture here<br>
+            (e.g. &lt;video&gt; tag with an mp4/webm from your recordings, or an
+            &lt;iframe&gt; to a hosted build)
+          </div>
+          <!-- Example once you have a captured demo video:
+          <video class="embed" controls>
+            <source src="demo-recording.mp4" type="video/mp4">
+          </video>
+          -->
+        </section>
+        <section>
+          <h3>Authoring in action</h3>
+          <div class="placeholder">📷 screenshots: dropping a waypoint, attaching assets, recording trail, exporting tour.zip</div>
+        </section>
+        <section>
+          <h3>Viewing in action</h3>
+          <div class="placeholder">📷 screenshots/video: walking toward a waypoint, knight appearing, tap-to-play story with transcript, map overview</div>
+        </section>
+        <section>
+          <h3>What you'd get if you used it</h3>
+          <ul class="small">
+            <li>A single <code>tour.zip</code> — assets + JSON, no server logic needed</li>
+            <li>Scan a QR &rarr; walking, GPS-anchored AR tour, in the browser</li>
+            <li>Works offline once the zip is loaded, no signup for visitors</li>
+          </ul>
+        </section>
+      </section>
+
+      <!-- 5. PROBLEMS -->
+      <section>
+        <h2>5. Where we struggled</h2>
+        <ul class="small">
+          <li>&lt;Team: fill in — e.g. GPS noise, WebXR permission quirks, testing movement-dependent code, integration across components&gt;</li>
+          <li>&lt;...&gt;</li>
+        </ul>
+      </section>
+
+      <!-- 6. WHAT WORKED WELL -->
+      <section>
+        <h2>6. What worked well</h2>
+        <ul class="small">
+          <li>&lt;Team: fill in — e.g. components-first approach kept work parallelizable, shared contract avoided integration pain, replay-based testing caught regressions early&gt;</li>
+          <li>&lt;...&gt;</li>
+        </ul>
+      </section>
+
+      <!-- 7. SUMMARY & QUESTIONS -->
+      <section>
+        <h2>7. Summary</h2>
+        <ul class="small">
+          <li>Built a 10-component AR audio tour-guide prototype, composed into Authoring + Viewing modes</li>
+          <li>Shared <code>tour.json</code>/Redux contract kept components independently testable and composable</li>
+          <li>Real recorded-walk replay tests made movement-dependent code deterministic and desktop-testable</li>
+        </ul>
+        <h2 style="margin-top:1em">Questions?</h2>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      controls: true,
+      progress: true,
+      center: true,
+      transition: 'slide',
+      plugins: [ RevealHighlight, RevealNotes ]
+    });
+  </script>
+</body>
+</html>
