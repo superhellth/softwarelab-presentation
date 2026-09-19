@@ -155,13 +155,13 @@
 
     .photo-tile h4 {
       margin: 0 0 0.35rem;
-      font-size: 1.05rem;
+      font-size: 1.6rem;
       color: #fff;
     }
 
     .photo-tile p {
       margin: 0;
-      font-size: 0.8rem;
+      font-size: 1.15rem;
       line-height: 1.4;
       color: #9aa4bd;
     }
@@ -399,12 +399,16 @@
       align-self: center;
     }
 
+    .chain .card {
+      padding: 0.8rem;
+    }
+
     .chain .card h4 {
-      font-size: 0.85rem;
+      font-size: 1.2rem;
     }
 
     .chain .card p {
-      font-size: 0.72rem;
+      font-size: 0.95rem;
     }
 
     /* zigzag flow diagram: rows alternate direction, joined by a turn arrow */
@@ -498,7 +502,7 @@
 
     .icon-row .icon-step p {
       margin: 0;
-      font-size: 0.85rem;
+      font-size: 1.4rem;
       color: #9aa4bd;
     }
 
@@ -507,6 +511,35 @@
       color: var(--accent);
       flex: 0 0 auto;
     }
+    .qr-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3.5rem;
+      margin-top: 2rem;
+    }
+
+    .qr-row img {
+      width: 320px;
+      height: 320px;
+      border-radius: 12px;
+      background: #fff;
+      flex: 0 0 auto;
+    }
+
+    .qr-row .qr-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 4.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .qr-row .qr-sub {
+      margin: 0.8rem 0 0;
+      font-size: 1.6rem;
+      color: #9aa4bd;
+    }
+
   </style>
 </head>
 
@@ -517,9 +550,9 @@
 
       <!-- ============ TITLE ============ -->
       <section>
-        <h1 style="font-size: 3.4rem;">Tour<span class="gradient-text">Builder</span></h1>
-        <p class="msg">An AR tour-guide app — sprites, 3D models and audio stories — built as ten independent
-          components.</p>
+        <h1 style="font-size: 5.2rem;">Tour<span class="gradient-text">Builder</span></h1>
+        <p class="msg" style="font-size: 1.7rem; line-height: 1.4;">An AR tour-guide app built as ten independent
+          components:<br>create a tour, add waypoints with assets, share it via QR code.</p>
         <p class="small" style="margin-top:1.5rem;">Maria Elia &nbsp;·&nbsp; Nicolas Hellthaler &nbsp;·&nbsp;
           Location-Based WebXR Lab, Team 2</p>
       </section>
@@ -531,7 +564,7 @@
         <h2>All-in-one Guided Tours</h2>
         <div class="card-grid">
           <div class="photo-tile fragment fade-up">
-            <div class="photo-img" style="background-image:url('assets/museum.png');"></div>
+            <div class="photo-img" style="background-image:url('assets/museum.png'); background-size:auto 110%; background-repeat:no-repeat;"></div>
             <h4>Museums</h4>
             <p>Art exhibitions and educational tours</p>
           </div>
@@ -577,7 +610,7 @@
         <div class="chain">
           <div class="card fragment fade-up" data-fragment-index="0">
             <h4>Brainstorming with LLM</h4>
-            <p>/grill-me /superpowers:brainstorming</p>
+            <p>/grill-me /superpowers:<wbr>brainstorming</p>
           </div>
           <div class="arrow fragment fade-up" data-fragment-index="1">→</div>
           <div class="card fragment fade-up" data-fragment-index="1">
@@ -694,8 +727,14 @@
       <section class="chapter-divider" data-chapter-num="06" data-chapter-title="Summary"></section>
 
       <section data-chapter-num="06" data-chapter-title="Summary">
-        <div class="card-grid four fade-up">
-          <div class="card stat highlight"><span class="big">10</span>
+        <h2>What did we achieve?</h2>
+        <ul class="compact fragment fade-up" data-fragment-index="0">
+          <li>AR tour guide: author a tour, share it via QR code, walk it in AR</li>
+          <li>Agent-guided, test-driven workflow with replayed real walks as e2e tests</li>
+          <li>Ten isolated components around one shared tour contract</li>
+        </ul>
+        <div class="card-grid four fragment fade-up" data-fragment-index="1">
+          <div class="card stat"><span class="big">10</span>
             <p>isolated, tested components</p>
           </div>
           <div class="card stat"><span class="big">124</span>
@@ -706,6 +745,16 @@
           </div>
           <div class="card stat"><span class="big">632</span>
             <p>automated tests</p>
+          </div>
+        </div>
+      </section>
+
+      <section data-chapter-num="06" data-chapter-title="Summary">
+        <div class="qr-row">
+          <img src="assets/extended.svg" alt="QR code to the TourBuilder app">
+          <div>
+            <div class="qr-title gradient-text">Try it yourself!</div>
+            <p class="qr-sub">Scan the code and open the TourBuilder app</p>
           </div>
         </div>
       </section>
