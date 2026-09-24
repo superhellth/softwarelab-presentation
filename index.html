@@ -246,6 +246,19 @@
       display: block;
     }
 
+    .frame.vertical {
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .frame video {
+      height: 500px;
+      max-width: 100%;
+      display: block;
+      background: #000;
+    }
+
     .frame-label {
       font-size: 0.78rem;
       color: #9aa4bd;
@@ -763,9 +776,8 @@
             allow="camera; geolocation; xr-spatial-tracking; autoplay"></iframe></div>
       </section>
 
-      <!-- PLACEHOLDER: replace with real content -->
       <section data-chapter-num="05" data-chapter-title="Tourbuilder App">
-        <p class="msg">Walked tour highlight video</p>
+        <div class="frame vertical"><video src="assets/TourBuilder.mp4" controls preload="metadata"></video></div>
       </section>
 
       <!-- ============ CHAPTER 6: SUMMARY ============ -->
@@ -779,13 +791,13 @@
           <li>AR tour guide: author a tour, share it via QR code, walk it in AR</li>
         </ul>
         <div class="card-grid four fragment fade-up" data-fragment-index="1">
-          <div class="card stat"><span class="big">124</span>
+          <div class="card stat"><span class="big">251</span>
             <p>commits, ~10 weeks</p>
           </div>
-          <div class="card stat"><span class="big">55k</span>
-            <p>lines changed</p>
+          <div class="card stat"><span class="big">58k</span>
+            <p>lines of Code</p>
           </div>
-          <div class="card stat"><span class="big">632</span>
+          <div class="card stat"><span class="big">867</span>
             <p>automated tests</p>
           </div>
         </div>
